@@ -1,18 +1,22 @@
 const express = require('express');
-const { Wallet } = require('ethers');
-const cors = require('cors');
+const { ethers } = require("ethers");
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 3000;
 
-app.get('/generate-wallet', (req, res) => {
-  const wallet = Wallet.createRandom();
-  res.json({
-    address: wallet.address,
-    privateKey: wallet.privateKey
-  });
+function generateWallet() {
+    const wallet = ethers.Wallet.createRandom();
+    return {
+        address: wallet.address,
+        privateKey: wallet.privateKey,
+    };
+}
+
+app.get('/', (req, res) => {
+    const wallet = generateWallet();
+    res.json(wallet);
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Wallet generator running...');
+app.listen(PORT, () => {
+    console.log(`Wallet generator running on port ${PORT}...`);
 });
